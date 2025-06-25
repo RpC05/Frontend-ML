@@ -1,0 +1,95 @@
+<router-outlet></router-outlet>
+<div class="container-fluid p-0"> 
+  <div class="position-relative text-center">
+    <img [src]="imgPath" alt="Cabecera" class="img-fluid w-100" style="height: 350px; object-fit: cover;">
+    <div class="position-absolute top-50 start-50 translate-middle">
+      <h1 class="titulo display-4 text-white fw-bold">
+        <span class="text">Datos Predictivos Doña Bere</span>
+      </h1>
+    </div>
+  </div>
+
+  <div class="container my-5">
+    <h2 class="text-center mb-4">Predicción de Platos</h2>
+ 
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card shadow">
+          <div class="card-body">
+            <form (ngSubmit)="onSubmit()"> 
+              <div class="mb-3">
+                <label for="clima" class="form-label">Clima:</label>
+                <select id="clima" [(ngModel)]="clima" name="clima" class="form-select" required>
+                  <option value="" disabled selected>Seleccione el clima</option>
+                  <option *ngFor="let option of climaOptions" [value]="option">{{ option }}</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="dia" class="form-label">Día:</label>
+                <select id="dia" [(ngModel)]="nombreDia" name="dia" class="form-select" required (ngModelChange)="actualizarFinDeSemana()">
+                  <option value="" disabled selected>Seleccione el día</option>
+                  <option *ngFor="let option of diaOptions" [value]="option">{{ option }}</option>
+                </select>
+              </div>
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="finDeSemana" [(ngModel)]="esFinDeSemana" [disabled]="true" name="finDeSemana">
+                <label class="form-check-label" for="finDeSemana">¿Fin de semana?</label>
+              </div>
+              <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="esFeriado" [(ngModel)]="esFeriado" name="esFeriado">
+                <label class="form-check-label" for="esFeriado">¿Es feriado?</label>
+              </div>
+              <button type="submit" class="btn botonpre w-100">Predecir</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div> 
+
+    <div *ngIf="predictions" class="mt-5"> 
+      <h3 class="text-center mb-3">Predicciones:</h3>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <ul class="list-group">
+            <ng-container *ngFor="let item of predictions | keyvalue : keepOriginalOrder"> 
+              <li *ngIf="item.key !== 'prediction_group_id'" class="list-group-item d-flex justify-content-between align-items-center" [class.bg-info]="item.key === 'total_platos'">
+                <strong>{{ item.key }}:</strong>
+                <span class="badge bg-primary rounded-pill">{{ item.value }}</span>
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+      </div>
+ 
+      <div *ngIf="!feedbackGiven" class="row justify-content-center mt-4">
+        <div class="col-md-6">
+          <div class="card shadow-sm">
+            <div class="card-header">
+              <h4 class="text-center">Canal de Feedback</h4>
+            </div>
+            <div class="card-body">
+              <p class="text-center">Introduce la cantidad real vendida para cada plato.</p>
+              <form (ngSubmit)="submitFeedback()">
+                <ng-container *ngFor="let item of predictions | keyvalue : keepOriginalOrder"> 
+                  <div *ngIf="item.key !== 'total_platos' && item.key !== 'prediction_group_id'" class="mb-2">
+                    <label [for]="item.key" class="form-label">{{ item.key }}</label>
+                    <input type="number" class="form-control" [id]="item.key" min="0" placeholder="Cantidad real vendida" [(ngModel)]="observedSales[item.key]" [name]="item.key">
+                  </div>
+                </ng-container>
+                <button type="submit" class="btn btn-success w-100 mt-3">Enviar Ventas Reales</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <div *ngIf="feedbackGiven" class="row justify-content-center mt-4">
+        <div class="col-md-6">
+          <div class="alert alert-success text-center">
+            <strong>¡Gracias!</strong> Tus datos ayudarán a mejorar futuras predicciones.
+          </div>
+        </div>
+      </div> 
+    </div>
+  </div>
+</div>
