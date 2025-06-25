@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService { 
-  private baseUrl = 'https://765e-35-196-177-156.ngrok-free.app'; 
+  private baseUrl = 'https://backend-ml-j9hg.onrender.com'; 
  
   private predictUrl = `${this.baseUrl}/predict`;
   private feedbackUrl = `${this.baseUrl}/feedback`;
@@ -15,8 +15,7 @@ export class ApiService {
    
   Predictions(data: any): Observable<any> {
     const headers = new HttpHeaders({ 
-      'Content-Type': 'application/json', 
-      'ngrok-skip-browser-warning': 'true' 
+      'Content-Type': 'application/json',  
     });
     return this.http.post(this.predictUrl, data, { headers });
   } 
