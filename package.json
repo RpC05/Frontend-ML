@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@angular/platform-browser": "^19.2.12",
+    "bootstrap": "^5.3.6"
+  }
+}
